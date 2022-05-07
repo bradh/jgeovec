@@ -31,16 +31,32 @@ public record Point(double x, double y, Double z, Double m) {
         return m != null;
     }
 
+    public Point withM(double mValue) {
+        return new Point(this.x, this.y, this.z, mValue);
+    }
+
     @Override
     public String toString() {
         if (hasZ() && hasM()) {
-            return String.format("POINT ZM(%f, %f, %f, %f)", x, y, z, m);
+            return String.format("POINT ZM(%f  %f  %f  %f)", x, y, z, m);
         } else if (hasZ()) {
-            return String.format("POINT Z(%f, %f, %f)", x, y, z);
+            return String.format("POINT Z(%f %f %f)", x, y, z);
         } else if (hasM()) {
-            return String.format("POINT M(%f, %f, %f)", x, y, m);
+            return String.format("POINT M(%f %f %f)", x, y, m);
         } else {
-            return String.format("POINT(%f, %f)", x, y);
+            return String.format("POINT(%f %f)", x, y);
+        }
+    }
+
+    public String getStringCoordinates() {
+        if (hasZ() && hasM()) {
+            return String.format("%f  %f  %f  %f", x, y, z, m);
+        } else if (hasZ()) {
+            return String.format("%f %f %f", x, y, z);
+        } else if (hasM()) {
+            return String.format("%f %f %f", x, y, m);
+        } else {
+            return String.format("%f %f", x, y);
         }
     }
 }

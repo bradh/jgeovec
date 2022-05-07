@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
+import net.frogmouth.rnd.simplefeaturesaccess.LineString;
 import net.frogmouth.rnd.simplefeaturesaccess.Point;
 
 public class Shapefile {
@@ -16,6 +19,7 @@ public class Shapefile {
     private static final int NUM_VALUES_IN_POINTM = 3;
     private static final int NUM_VALUES_IN_POINTZ = 3;
     private static final int NUM_VALUES_IN_POINTZM = 4;
+    private static final int POLYLINE_HEADER_LEN = 4 * Double.BYTES + 2 * Integer.BYTES;
     private FileHeader fileHeader;
 
     public Shapefile() {}
@@ -88,6 +92,12 @@ public class Shapefile {
                             System.out.println(point.toString());
                         }
                     }
+                    case PolyLine -> {
+                        bytesRemaining = processPolyLine(dis, bytesRemaining);
+                    }
+                    case PolyLineM -> {
+                        bytesRemaining = processPolyLineM(dis, bytesRemaining);
+                    }
                     default -> {
                         dis.skipBytes(recordBytesLen);
                         bytesRemaining -= recordBytesLen;
@@ -97,6 +107,99 @@ public class Shapefile {
             }
         }
         return shapefile;
+    }
+
+    private static int processPolyLine(final DataInputStream dis, int bytesRemaining)
+            throws UnsupportedOperationException, IOException {
+        byte[] fixedBytes = dis.readNBytes(POLYLINE_HEADER_LEN);
+        bytesRemaining -= POLYLINE_HEADER_LEN;
+        ByteBuffer fixedBytesLE = ByteBuffer.wrap(fixedBytes).order(ByteOrder.LITTLE_ENDIAN);
+        Box box = Box.fromByteBuffer(fixedBytesLE);
+        int numParts = fixedBytesLE.getInt(Box.BYTES);
+        int numPoints = fixedBytesLE.getInt(Box.BYTES + Integer.BYTES);
+        System.out.println(box.toString());
+        int variableBytesSize =
+                numParts * Integer.BYTES + numPoints * NUM_VALUES_IN_POINT * Double.BYTES;
+        byte[] variableBytes = dis.readNBytes(variableBytesSize);
+        bytesRemaining -= variableBytesSize;
+        ByteBuffer variableBytesLE = ByteBuffer.wrap(variableBytes).order(ByteOrder.LITTLE_ENDIAN);
+        List<Integer> partOffsets = new ArrayList<>();
+        List<Point> points = new ArrayList<>();
+        int variableBytesOffset = 0;
+        for (int partNumber = 0; partNumber < numParts; partNumber++) {
+            partOffsets.add(variableBytesLE.getInt(variableBytesOffset));
+            variableBytesOffset += Integer.BYTES;
+        }
+        for (int pointNumber = 0; pointNumber < numPoints; pointNumber++) {
+            double x = variableBytesLE.getDouble(variableBytesOffset);
+            variableBytesOffset += Double.BYTES;
+            double y = variableBytesLE.getDouble(variableBytesOffset);
+            variableBytesOffset += Double.BYTES;
+            Point point = new Point(x, y);
+            points.add(point);
+        }
+        if (partOffsets.size() == 1) {
+            LineString lineString = new LineString(points);
+            System.out.println(lineString.toString());
+        } else if (partOffsets.size() > 1) {
+            throw new UnsupportedOperationException("TODO: multilinestring");
+            // TODO: Multilinestring case
+        }
+        return bytesRemaining;
+    }
+
+    private static int processPolyLineM(final DataInputStream dis, int bytesRemaining)
+            throws UnsupportedOperationException, IOException {
+        // TODO: this looks to be the same as processPolyLine
+        byte[] fixedBytes = dis.readNBytes(POLYLINE_HEADER_LEN);
+        bytesRemaining -= POLYLINE_HEADER_LEN;
+        ByteBuffer fixedBytesLE = ByteBuffer.wrap(fixedBytes).order(ByteOrder.LITTLE_ENDIAN);
+        Box box = Box.fromByteBuffer(fixedBytesLE);
+        int numParts = fixedBytesLE.getInt(Box.BYTES);
+        int numPoints = fixedBytesLE.getInt(Box.BYTES + Integer.BYTES);
+        System.out.println(box.toString());
+        int variableBytesSize =
+                numParts * Integer.BYTES + numPoints * NUM_VALUES_IN_POINT * Double.BYTES;
+        byte[] variableBytes = dis.readNBytes(variableBytesSize);
+        bytesRemaining -= variableBytesSize;
+        ByteBuffer variableBytesLE = ByteBuffer.wrap(variableBytes).order(ByteOrder.LITTLE_ENDIAN);
+        List<Integer> partOffsets = new ArrayList<>();
+        List<Point> basePoints = new ArrayList<>();
+        int variableBytesOffset = 0;
+        for (int partNumber = 0; partNumber < numParts; partNumber++) {
+            partOffsets.add(variableBytesLE.getInt(variableBytesOffset));
+            variableBytesOffset += Integer.BYTES;
+        }
+        for (int pointNumber = 0; pointNumber < numPoints; pointNumber++) {
+            double x = variableBytesLE.getDouble(variableBytesOffset);
+            variableBytesOffset += Double.BYTES;
+            double y = variableBytesLE.getDouble(variableBytesOffset);
+            variableBytesOffset += Double.BYTES;
+            Point point = new Point(x, y);
+            basePoints.add(point);
+        }
+        // M part starts here - everything above is common with PolyLine
+        byte[] mBytes = dis.readNBytes((2 + numPoints) * Double.BYTES);
+        bytesRemaining -= mBytes.length;
+        ByteBuffer mRangeBytesLE = ByteBuffer.wrap(mBytes).order(ByteOrder.LITTLE_ENDIAN);
+        // TODO: work out how to expose the M range.
+        double minM = mRangeBytesLE.getDouble(0 * Double.BYTES);
+        double maxM = mRangeBytesLE.getDouble(1 * Double.BYTES);
+        List<Point> points = new ArrayList<>();
+        for (int pointNumber = 0; pointNumber < numPoints; pointNumber++) {
+            double m = variableBytesLE.getDouble((2 + pointNumber) * Double.BYTES);
+            Point basePoint = basePoints.get(pointNumber);
+            Point point = basePoint.withM(m);
+            points.add(point);
+        }
+        if (partOffsets.size() == 1) {
+            LineString lineString = new LineString(points);
+            System.out.println(lineString.toString());
+        } else if (partOffsets.size() > 1) {
+            throw new UnsupportedOperationException("TODO: multilinestring");
+            // TODO: Multilinestring case
+        }
+        return bytesRemaining;
     }
 
     public FileHeader getFileHeader() {
