@@ -20,6 +20,8 @@ public enum DBFFieldType {
     Date(0x44, 'D', "Date"),
     /** Float */
     Float(0x46, 'F', "Float"),
+    /** Logical. */
+    Logical(0x4C, 'L', "Logical"),
     /**
      * Numeric.
      *

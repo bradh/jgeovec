@@ -12,16 +12,37 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Base File (DBF) part of the shapefile.
+ *
+ * <p>This holds the attributes for each geometry.
+ */
 public class DataBaseFile {
 
-    private List<DBFFieldDefinition> fieldDefinitions = new ArrayList<>();
+    private final List<DBFFieldDefinition> fieldDefinitions = new ArrayList<>();
 
+    /** Constructor. */
     public DataBaseFile() {}
 
+    /**
+     * Create DataBaseFile from a file.
+     *
+     * @param file the file to read from
+     * @return the corresponding DataBaseFile.
+     * @throws FileNotFoundException if the file could not be opened
+     * @throws IOException if the file is not valid
+     */
     public static DataBaseFile fromFile(File file) throws FileNotFoundException, IOException {
         return fromInputStream(new FileInputStream(file));
     }
 
+    /**
+     * Create DataBaseFile from an input stream.
+     *
+     * @param inputStream the input stream to read from
+     * @return the corresponding DataBaseFile.
+     * @throws IOException if the file is not valid
+     */
     public static DataBaseFile fromInputStream(InputStream inputStream) throws IOException {
         DataBaseFile dbf = new DataBaseFile();
         try (DataInputStream dis = new DataInputStream(inputStream)) {
@@ -91,10 +112,20 @@ public class DataBaseFile {
         return (bb.getShort() & 0xFFFF);
     }
 
+    /**
+     * Add a field definition to this DBF.
+     *
+     * @param fieldDefinition the field definition to add
+     */
     public void addFieldDefinition(DBFFieldDefinition fieldDefinition) {
         fieldDefinitions.add(fieldDefinition);
     }
 
+    /**
+     * Get the field definitions for this DBF.
+     *
+     * @return the field definitions as a List.
+     */
     public List<DBFFieldDefinition> getFieldDefinitions() {
         return new ArrayList<>(this.fieldDefinitions);
     }

@@ -23,6 +23,9 @@ public enum ShapeType {
     /**
      * Point with Z.
      *
+     * <p>This can also contain an "M" part. M usually means some kind of measurement, not usually
+     * altitude or height.
+     *
      * <p>Z usually means altitude or height.
      */
     PointZ(11, "PointZ", true, true),
@@ -31,17 +34,26 @@ public enum ShapeType {
      *
      * <p>LineString / MultiLineString is equivalent.
      *
+     * <p>This can also contain an "M" part. M usually means some kind of measurement, not usually
+     * altitude or height.
+     *
      * <p>Z usually means altitude or height.
      */
     PolyLineZ(13, "PolyLineZ", true, true),
     /**
      * Polygon or MultiPolygon with Z.
      *
+     * <p>This can also contain an "M" part. M usually means some kind of measurement, not usually
+     * altitude or height.
+     *
      * <p>Z usually means altitude or height.
      */
     PolygonZ(15, "PolygonZ", true, true),
     /**
      * MultiPoint with Z.
+     *
+     * <p>This can also contain an "M" part. M usually means some kind of measurement, not usually
+     * altitude or height.
      *
      * <p>Z usually means altitude or height.
      */
@@ -52,8 +64,25 @@ public enum ShapeType {
      * <p>M usually means some kind of measurement, not usually altitude or height.
      */
     PointM(21, "PointM", false, true),
+    /**
+     * Polyline or MultiPolyline with M.
+     *
+     * <p>LineString / MultiLineString is equivalent.
+     *
+     * <p>M usually means some kind of measurement, not usually altitude or height
+     */
     PolyLineM(23, "PolyLineM", false, true),
+    /**
+     * Polygon or MultiPolygon with M.
+     *
+     * <p>M usually means some kind of measurement, not usually altitude or height
+     */
     PolygonM(25, "PolygonM", false, true),
+    /**
+     * MultiPoint with M.
+     *
+     * <p>M usually means some kind of measurement, not usually altitude or height.
+     */
     MultiPointM(28, "MultiPointM", false, true),
     MultiPatch(31, "MultiPatch", true, true);
 
