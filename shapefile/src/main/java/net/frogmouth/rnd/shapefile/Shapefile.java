@@ -13,6 +13,11 @@ import java.util.List;
 import net.frogmouth.rnd.simplefeaturesaccess.LineString;
 import net.frogmouth.rnd.simplefeaturesaccess.Point;
 
+/**
+ * Shapefile.
+ *
+ * <p>This models the .shp part of the shapefile set.
+ */
 public class Shapefile {
 
     private static final int NUM_VALUES_IN_POINT = 2;
@@ -22,12 +27,28 @@ public class Shapefile {
     private static final int POLYLINE_HEADER_LEN = 4 * Double.BYTES + 2 * Integer.BYTES;
     private FileHeader fileHeader;
 
+    /** Constructor. */
     public Shapefile() {}
 
+    /**
+     * Create a Shapefile instance from a file.
+     *
+     * @param file the file to read from
+     * @return the corresponding Shapefile
+     * @throws FileNotFoundException if the file could not be found
+     * @throws IOException if parsing fails.
+     */
     public static Shapefile fromFile(File file) throws FileNotFoundException, IOException {
         return fromInputStream(new FileInputStream(file));
     }
 
+    /**
+     * Create a Shapefile instance from an input stream.
+     *
+     * @param inputStream the input stream to read from
+     * @return the corresponding Shapefile
+     * @throws IOException if parsing fails.
+     */
     public static Shapefile fromInputStream(InputStream inputStream) throws IOException {
         Shapefile shapefile = new Shapefile();
         try (DataInputStream dis = new DataInputStream(inputStream)) {
@@ -202,10 +223,20 @@ public class Shapefile {
         return bytesRemaining;
     }
 
+    /**
+     * Get the file header.
+     *
+     * @return the file header for this Shapefile.
+     */
     public FileHeader getFileHeader() {
         return fileHeader;
     }
 
+    /**
+     * Set the file header
+     *
+     * @param fileHeader the file header for this Shapefile.
+     */
     public void setFileHeader(FileHeader fileHeader) {
         this.fileHeader = fileHeader;
     }

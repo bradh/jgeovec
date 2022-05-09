@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import java.util.List;
  */
 public class DataBaseFile {
 
+    private LocalDate lastUpdate;
     private final List<DBFFieldDefinition> fieldDefinitions = new ArrayList<>();
 
     /** Constructor. */
@@ -49,11 +51,10 @@ public class DataBaseFile {
             byte dbfFileType = dis.readByte();
             System.out.println(String.format("dbfFileType: 0x%02x", dbfFileType));
             int lastUpdateYear = 1900 + (dis.readByte() & 0xFF);
-            System.out.println(String.format("lastUpdateYear: %d", lastUpdateYear));
             byte lastUpdateMonth = dis.readByte();
-            System.out.println(String.format("lastUpdateMonth: %d", lastUpdateMonth));
             byte lastUpdateDay = dis.readByte();
-            System.out.println(String.format("lastUpdateDay: %d", lastUpdateDay));
+            dbf.setLastUpdate(LocalDate.of(lastUpdateYear, lastUpdateMonth, lastUpdateDay));
+            System.out.println("Last update: " + dbf.getLastUpdate().toString());
             long numRecords = readUint32LittleEndian(dis);
             System.out.println(String.format("numRecords: 0x%08x (%d)", numRecords, numRecords));
             int firstDataRecordOffset = readUint16LittleEndian(dis);
@@ -119,6 +120,14 @@ public class DataBaseFile {
      */
     public void addFieldDefinition(DBFFieldDefinition fieldDefinition) {
         fieldDefinitions.add(fieldDefinition);
+    }
+
+    public LocalDate getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(LocalDate lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
     /**

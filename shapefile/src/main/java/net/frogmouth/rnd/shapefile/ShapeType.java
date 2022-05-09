@@ -98,22 +98,54 @@ public enum ShapeType {
         this.hasM = hasM;
     }
 
+    /**
+     * Get the encoded value for this shape type.
+     *
+     * @return the encoded value as an integer.
+     */
     public int getValue() {
         return value;
     }
 
+    /**
+     * Get a text description for this shape type.
+     *
+     * @return a short text description as a String
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Whether this shape type has a Z value.
+     *
+     * <p>Z usually means altitude or height.
+     *
+     * @return true if the value has a Z value, otherwise false.
+     */
     public boolean hasZ() {
         return hasZ;
     }
 
+    /**
+     * Whether this shape type potentially has an M value.
+     *
+     * <p>M usually means some kind of measurement, not usually altitude or height.
+     *
+     * <p>Values that support Z have M as optional. Each instance may or may not have valid M.
+     *
+     * @return true if the value has a Z value, otherwise false.
+     */
     public boolean hasM() {
         return hasM;
     }
 
+    /**
+     * Look up a shape type from the encoded value.
+     *
+     * @param value the integer value to look up
+     * @return the corresponding shape type, or null if not found.
+     */
     public static ShapeType lookupValue(int value) {
         for (ShapeType shapeType : ShapeType.values()) {
             if (value == shapeType.getValue()) {

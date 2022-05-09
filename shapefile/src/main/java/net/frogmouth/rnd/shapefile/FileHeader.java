@@ -7,9 +7,9 @@ import java.nio.ByteOrder;
 
 public class FileHeader {
 
-    static final int SHP_FILE_CODE = 9994;
-    static final int UNUSED_COUNT = 5;
-    static final int NUM_BOUNDING_BOX_VALUES = 8;
+    private static final int SHP_FILE_CODE = 9994;
+    private static final int UNUSED_COUNT = 5;
+    private static final int NUM_BOUNDING_BOX_VALUES = 8;
     /**
      * FileHeader size in bytes.
      *
@@ -70,10 +70,20 @@ public class FileHeader {
         return fh;
     }
 
+    /**
+     * Get the file length.
+     *
+     * @return the file length in bytes.
+     */
     public int getFileLength() {
         return fileLength;
     }
 
+    /**
+     * Set the file length.
+     *
+     * @param length the file length in bytes.
+     */
     public void setFileLength(int length) {
         this.fileLength = length;
     }
