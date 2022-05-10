@@ -4,9 +4,17 @@ package net.frogmouth.rnd.shapefile;
  * Enumeration of potential shape types.
  *
  * <p>Each shapefile contains exactly one type of value (e.g., its all points, or its all polygons,
- * never a mix of points and polygons).
+ * never a mix of points and polygons). As a special case, files can also contain null shapes.
  */
 public enum ShapeType {
+    /**
+     * Null Shape.
+     *
+     * <p>A shape type of 0 indicates a null shape, with no geometric data for the shape. Each
+     * feature type (point, line, polygon, etc.) supports nulls - it is valid to have points and
+     * null points in the same shapefile. Often null shapes are place holders; they are used during
+     * shapefile creation and are populated with geometric data soon after they are created.
+     */
     NullShape(0, "Null Shape", false, false),
     /** Point. */
     Point(1, "Point", false, false),
@@ -84,6 +92,13 @@ public enum ShapeType {
      * <p>M usually means some kind of measurement, not usually altitude or height.
      */
     MultiPointM(28, "MultiPointM", false, true),
+    /**
+     * MultiPatch.
+     *
+     * <p>A MultiPatch consists of a number of surface patches. Each surface patch describes a
+     * surface. The surface patches of a MultiPatch are referred to as its parts, and the type of
+     * part controls how the order of vertices of an MultiPatch part is interpreted.
+     */
     MultiPatch(31, "MultiPatch", true, true);
 
     private final int value;

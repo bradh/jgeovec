@@ -122,14 +122,6 @@ public class DataBaseFile {
         fieldDefinitions.add(fieldDefinition);
     }
 
-    public LocalDate getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(LocalDate lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
     /**
      * Get the field definitions for this DBF.
      *
@@ -137,5 +129,29 @@ public class DataBaseFile {
      */
     public List<DBFFieldDefinition> getFieldDefinitions() {
         return new ArrayList<>(this.fieldDefinitions);
+    }
+
+    /**
+     * Get the last update to the database file.
+     *
+     * <p>The update is only tracked to the resolution of a day, and does not have an explicit time
+     * zone.
+     *
+     * @return the last update as a date.
+     */
+    public LocalDate getLastUpdate() {
+        return lastUpdate;
+    }
+
+    /**
+     * Set the last update to the database file.
+     *
+     * <p>The update is only tracked to the resolution of a day, and does not have an explicit time
+     * zone.
+     *
+     * @param lastUpdate the last update as a date.
+     */
+    public void setLastUpdate(LocalDate lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 }

@@ -5,6 +5,11 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+/**
+ * Shapefile / Shape Index file header.
+ *
+ * <p>This structure is common to both of those files.
+ */
 public class FileHeader {
 
     private static final int SHP_FILE_CODE = 9994;
@@ -29,6 +34,17 @@ public class FileHeader {
     private Double minM;
     private Double maxM;
 
+    /** Constructor. */
+    public FileHeader() {}
+    ;
+
+    /**
+     * Parse a file header from a data input stream.
+     *
+     * @param dis the data input stream to read the header values from
+     * @return the corresponding FileHeader.
+     * @throws IOException if parsing fails.
+     */
     public static FileHeader fromDataInputStream(final DataInputStream dis) throws IOException {
         FileHeader fh = new FileHeader();
         int fileCode = dis.readInt();
@@ -88,82 +104,226 @@ public class FileHeader {
         this.fileLength = length;
     }
 
+    /**
+     * Get the version value for this file header.
+     *
+     * @return the version as an integer
+     */
     public int getVersion() {
         return version;
     }
 
+    /**
+     * Set the version value for this file header.
+     *
+     * @param version the version as an integer.
+     */
     public void setVersion(int version) {
         this.version = version;
     }
 
+    /**
+     * Get the shape type.
+     *
+     * <p>Each shapefile can only hold a single geometry type, which is identified by this value.
+     *
+     * @return the shape type as an enumerated value.
+     */
     public ShapeType getShapeType() {
         return shapeType;
     }
 
+    /**
+     * Set the shape type.
+     *
+     * <p>Each shapefile can only hold a single geometry type, which is identified by this value.
+     *
+     * @param shapeType the shape type as an enumerated value.
+     */
     public void setShapeType(ShapeType shapeType) {
         this.shapeType = shapeType;
     }
 
+    /**
+     * Get the minimum X value.
+     *
+     * <p>For a latitude / longitude coordinate reference system, this will be the minimum longitude
+     * value.
+     *
+     * @return the minimum X value.
+     */
     public double getMinX() {
         return minX;
     }
 
+    /**
+     * Set the minimum X value.
+     *
+     * <p>For a latitude / longitude coordinate reference system, this is the minimum longitude
+     * value.
+     *
+     * @param minX the minimum X value.
+     */
     public void setMinX(double minX) {
         this.minX = minX;
     }
 
+    /**
+     * Get the minimum Y value.
+     *
+     * <p>For a latitude / longitude coordinate reference system, this will be the minimum latitude
+     * value.
+     *
+     * @return the minimum Y value.
+     */
     public double getMinY() {
         return minY;
     }
 
+    /**
+     * Set the minimum Y value.
+     *
+     * <p>For a latitude / longitude coordinate reference system, this is the minimum latitude
+     * value.
+     *
+     * @param minY the minimum Y value.
+     */
     public void setMinY(double minY) {
         this.minY = minY;
     }
 
+    /**
+     * Get the maximum X value.
+     *
+     * <p>For a latitude / longitude coordinate reference system, this will be the maximum longitude
+     * value.
+     *
+     * @return the maximum X value.
+     */
     public double getMaxX() {
         return maxX;
     }
 
+    /**
+     * Set the maximum X value.
+     *
+     * <p>For a latitude / longitude coordinate reference system, this is the maximum longitude
+     * value.
+     *
+     * @param maxX the maximum X value.
+     */
     public void setMaxX(double maxX) {
         this.maxX = maxX;
     }
 
+    /**
+     * Get the maximum Y value.
+     *
+     * <p>For a latitude / longitude coordinate reference system, this will be the maximum latitude
+     * value.
+     *
+     * @return the maximum Y value.
+     */
     public double getMaxY() {
         return maxY;
     }
 
+    /**
+     * Set the maximum Y value.
+     *
+     * <p>For a latitude / longitude coordinate reference system, this is the maximum latitude
+     * value.
+     *
+     * @param maxY the maximum Y value.
+     */
     public void setMaxY(double maxY) {
         this.maxY = maxY;
     }
 
+    /**
+     * Get the minimum Z value.
+     *
+     * <p>This is the smallest elevation or height.
+     *
+     * @return the minimum Z value.
+     */
     public Double getMinZ() {
         return minZ;
     }
 
+    /**
+     * Set the minimum Z value.
+     *
+     * <p>This is the smallest elevation or height.
+     *
+     * @param minZ the minimum Z value.
+     */
     public void setMinZ(Double minZ) {
         this.minZ = minZ;
     }
 
+    /**
+     * Get the maximum Z value.
+     *
+     * <p>This is the greatest elevation or height.
+     *
+     * @return the maximum Z value.
+     */
     public Double getMaxZ() {
         return maxZ;
     }
 
+    /**
+     * Set the maximum Z value.
+     *
+     * <p>This is the greatest elevation or height.
+     *
+     * @param maxZ the maximum Z value.
+     */
     public void setMaxZ(Double maxZ) {
         this.maxZ = maxZ;
     }
 
+    /**
+     * Get the minimum M value.
+     *
+     * <p>This is the smallest measure value.
+     *
+     * @return the minimum M value.
+     */
     public Double getMinM() {
         return minM;
     }
 
+    /**
+     * Set the minimum M value.
+     *
+     * <p>This is the smallest measure value.
+     *
+     * @param minM the minimum M value.
+     */
     public void setMinM(Double minM) {
         this.minM = minM;
     }
 
+    /**
+     * Get the maximum M value.
+     *
+     * <p>This is the greatest measure value.
+     *
+     * @return the maximum M value.
+     */
     public Double getMaxM() {
         return maxM;
     }
 
+    /**
+     * Set the maximum M value.
+     *
+     * <p>This is the greatest measure value.
+     *
+     * @param maxM the maximum M value.
+     */
     public void setMaxM(Double maxM) {
         this.maxM = maxM;
     }

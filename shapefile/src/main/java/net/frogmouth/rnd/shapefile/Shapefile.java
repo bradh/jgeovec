@@ -233,7 +233,7 @@ public class Shapefile {
     }
 
     /**
-     * Set the file header
+     * Set the file header.
      *
      * @param fileHeader the file header for this Shapefile.
      */
