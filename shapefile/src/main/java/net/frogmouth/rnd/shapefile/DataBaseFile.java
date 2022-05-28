@@ -81,18 +81,24 @@ public class DataBaseFile {
                 dbf.addFieldDefinition(fieldDefinition);
                 System.out.println("field definition: " + fieldDefinition.toString());
             }
+            List<DatabaseRow> rows = new ArrayList<>();
             System.out.println(String.format("End code: 0x%02x", dis.readByte()));
             for (int j = 0; j < numRecords; j++) {
                 byte deletedFlag = dis.readByte();
-                System.out.println(String.format("Deleted flag: 0x%02x", deletedFlag));
-                for (DBFFieldDefinition fieldDefinition : dbf.fieldDefinitions) {
-                    byte[] bytes = new byte[fieldDefinition.fieldLengthBinary()];
-                    dis.read(bytes);
-                    System.out.println(
-                            fieldDefinition.fieldName()
-                                    + ":"
-                                    + new String(bytes, StandardCharsets.US_ASCII));
+                if (deletedFlag == 0x20) {
+                    DatabaseRow row = new DatabaseRow();
+                    for (DBFFieldDefinition fieldDefinition : dbf.fieldDefinitions) {
+                        byte[] bytes = new byte[fieldDefinition.fieldLengthBinary()];
+                        dis.read(bytes);
+                        DatabaseField field =
+                                new DatabaseField(new String(bytes, StandardCharsets.US_ASCII));
+                        row.addField(field);
+                    }
+                    rows.add(row);
                 }
+            }
+            for (DatabaseRow row : rows) {
+                System.out.println(row.toString(dbf.getFieldDefinitions()));
             }
             System.out.println("Available: " + dis.available());
         }
